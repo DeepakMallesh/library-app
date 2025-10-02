@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function AdminPanel() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
@@ -12,14 +14,14 @@ export default function AdminPanel() {
 
   function fetchBooks(query = "") {
     axios
-      .get("http://localhost:5000/api/books", {
+      .get(`${BASE_URL}/api/books`, {
         params: query ? { search: query } : {},
       })
       .then((res) => {
         const booksWithPdfUrl = res.data.map((b) => ({
           ...b,
-          pdfUrl: `http://localhost:5000/api/books/${b.id}/pdf`,
-          coverUrl: `http://localhost:5000/api/books/${b.id}/cover`
+          pdfUrl: `${BASE_URL}/api/books/${b.id}/pdf`,
+          coverUrl: `${BASE_URL}/api/books/${b.id}/cover`,
         }));
         setBooks(booksWithPdfUrl);
       })
@@ -32,27 +34,29 @@ export default function AdminPanel() {
       fetchBooks("");
       return;
     }
-    
+
     const timer = setTimeout(() => {
       axios
-        .get("http://localhost:5000/api/books", { params: { search } })
+        .get(`${BASE_URL}/api/books`, { params: { search } })
         .then((res) => {
-          const sortedBooks = res.data.sort((a, b) => 
+          const sortedBooks = res.data.sort((a, b) =>
             a.title.toLowerCase().localeCompare(b.title.toLowerCase())
           );
-          
-          const sortedSuggestions = sortedBooks.map((b) => ({
-            id: b.id,
-            label: `${b.title} by ${b.author}`,
-            title: b.title,
-          })).slice(0, 8);
-          
+
+          const sortedSuggestions = sortedBooks
+            .map((b) => ({
+              id: b.id,
+              label: `${b.title} by ${b.author}`,
+              title: b.title,
+            }))
+            .slice(0, 8);
+
           const booksWithPdfUrl = sortedBooks.map((b) => ({
             ...b,
-            pdfUrl: `http://localhost:5000/api/books/${b.id}/pdf`,
-            coverUrl: `http://localhost:5000/api/books/${b.id}/cover`
+            pdfUrl: `${BASE_URL}/api/books/${b.id}/pdf`,
+            coverUrl: `${BASE_URL}/api/books/${b.id}/cover`,
           }));
-          
+
           setSuggestions(sortedSuggestions);
           setBooks(booksWithPdfUrl);
         })
@@ -74,7 +78,7 @@ export default function AdminPanel() {
   function handleDelete(id) {
     if (!window.confirm("Delete this book?")) return;
     axios
-      .delete(`http://localhost:5000/api/books/${id}`)
+      .delete(`${BASE_URL}/api/books/${id}`)
       .then(() => {
         setBooks((prev) => prev.filter((b) => b.id !== id));
         setSuggestions((prev) => prev.filter((s) => s.id !== id));
@@ -95,8 +99,10 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gradient-to-tr from-indigo-100 via-white to-blue-100 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-indigo-800">Library Admin Portal</h1>
-        
+        <h1 className="text-3xl font-bold mb-8 text-indigo-800">
+          Library Admin Portal
+        </h1>
+
         <div className="mb-6 relative max-w-md mx-auto">
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-600">
@@ -110,7 +116,7 @@ export default function AdminPanel() {
               className="pl-10 pr-4 py-3 rounded-lg border border-indigo-300 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             />
           </div>
-          
+
           {suggestions.length > 0 && (
             <ul className="absolute mt-1 left-0 right-0 z-50 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {suggestions.map((s) => (
@@ -143,13 +149,13 @@ export default function AdminPanel() {
                 <tr key={b.id} className="border-b hover:bg-gray-50 transition">
                   <td className="p-4">
                     <div className="w-12 h-16 relative">
-                      <img 
-                        src={b.coverUrl} 
+                      <img
+                        src={b.coverUrl}
                         alt={`Cover of ${b.title}`}
                         className="w-full h-full object-cover rounded shadow"
                         onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
                         }}
                       />
                       <div className="hidden w-full h-full items-center justify-center bg-gray-100 rounded text-xs text-gray-400">
@@ -165,8 +171,8 @@ export default function AdminPanel() {
                     {b.title}
                   </td>
                   <td className="p-4 text-gray-700">{b.author}</td>
-                  <td className="p-4 text-gray-600">{b.category || 'N/A'}</td>
-                  <td className="p-4 text-gray-600">{b.language || 'N/A'}</td>
+                  <td className="p-4 text-gray-600">{b.category || "N/A"}</td>
+                  <td className="p-4 text-gray-600">{b.language || "N/A"}</td>
                   <td className="p-4 text-center">
                     <div className="flex gap-2 justify-center">
                       <button
