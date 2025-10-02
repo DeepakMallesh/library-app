@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function IndexPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredBooks, setFilteredBooks] = useState([]);
@@ -35,13 +37,13 @@ export default function IndexPage() {
     }
 
     const timer = setTimeout(() => {
-      fetch(`http://localhost:5000/api/books?search=${encodeURIComponent(searchQuery)}`)
+      fetch(`${BASE_URL}/api/books?search=${encodeURIComponent(searchQuery)}`)
         .then(res => res.json())
         .then(data => {
           const suggestionsWithUrls = data.map(book => ({
             ...book,
-            coverUrl: `http://localhost:5000/api/books/${book.id}/cover`,
-            pdfUrl: `http://localhost:5000/api/books/${book.id}/pdf`
+            coverUrl: `${BASE_URL}/api/books/${book.id}/cover`,
+            pdfUrl: `${BASE_URL}/api/books/${book.id}/pdf`
           }));
           
           // Sort alphabetically by book title
@@ -84,13 +86,13 @@ export default function IndexPage() {
     if (filters.language) params.append('language', filters.language);
     if (filters.category) params.append('category', filters.category);
     
-    fetch(`http://localhost:5000/api/books?${params.toString()}`)
+    fetch(`${BASE_URL}/api/books?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
         const booksWithUrls = data.map(book => ({
           ...book,
-          coverUrl: `http://localhost:5000/api/books/${book.id}/cover`,
-          pdfUrl: `http://localhost:5000/api/books/${book.id}/pdf`
+          coverUrl: `${BASE_URL}/api/books/${book.id}/cover`,
+          pdfUrl: `${BASE_URL}/api/books/${book.id}/pdf`
         }));
         setFilteredBooks(booksWithUrls);
       })

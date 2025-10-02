@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 export default function SearchSuggestions({ query, onSelect }) {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const BASE_URL = "https://library-backend-jrs5.onrender.com";
 
   useEffect(() => {
     if (!query || query.trim().length < 2) {
@@ -12,14 +13,14 @@ export default function SearchSuggestions({ query, onSelect }) {
 
     setLoading(true);
     const timer = setTimeout(() => {
-      fetch(`http://localhost:5000/api/books?search=${encodeURIComponent(query)}`)
+      fetch(`${BASE_URL}/api/books?search=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
           // Add BLOB URLs to suggestions
           const suggestionsWithUrls = data.slice(0, 8).map(book => ({
             ...book,
-            coverUrl: `http://localhost:5000/api/books/${book.id}/cover`,
-            pdfUrl: `http://localhost:5000/api/books/${book.id}/pdf`
+            coverUrl: `${BASE_URL}/api/books/${book.id}/cover`,
+            pdfUrl: `${BASE_URL}/api/books/${book.id}/pdf`
           }));
           setSuggestions(suggestionsWithUrls);
           setLoading(false);

@@ -4,6 +4,8 @@ import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import Breadcrumbs from '../components/navigation/Breadcrumbs';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function BookDetailsPage() {
   const { id } = useParams();
   const [book, setBook] = useState(null);
@@ -13,7 +15,7 @@ export default function BookDetailsPage() {
   useEffect(() => {
     setLoading(true);
     setError('');
-    fetch(`http://localhost:5000/api/books/${id}`)
+    fetch(`${BASE_URL}/api/books/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Book not found');
         return res.json();
@@ -22,8 +24,8 @@ export default function BookDetailsPage() {
         // Add BLOB URLs to the book object
         const bookWithUrls = {
           ...data,
-          coverUrl: `http://localhost:5000/api/books/${data.id}/cover`,
-          pdfUrl: `http://localhost:5000/api/books/${data.id}/pdf`
+          coverUrl: `${BASE_URL}/api/books/${data.id}/cover`,
+          pdfUrl: `${BASE_URL}/api/books/${data.id}/pdf`
         };
         setBook(bookWithUrls);
         setLoading(false);

@@ -2,6 +2,8 @@ import React from 'react';
 import Loading from '../common/Loading';
 import ErrorMessage from '../common/ErrorMessage';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function SearchResults({ books, loading, error }) {
   if (loading) return <Loading />;
   if (error) return <ErrorMessage message={error} />;
@@ -13,14 +15,14 @@ export default function SearchResults({ books, loading, error }) {
           key={book.id}
           className="bg-white rounded-lg shadow p-4 flex flex-col cursor-pointer"
           style={{ height: '420px', width: 'calc(100% - 5px)' }} // +10px height, -5px width
-          onClick={() => window.open(`http://localhost:5000/api/books/${book.id}/pdf`, '_blank')}
+          onClick={() => window.open(`${BASE_URL}/api/books/${book.id}/pdf`, '_blank')}
         >
           <div
             className="mb-4 flex justify-center items-center"
             style={{ width: '100%', height: '180px', overflow: 'hidden', background: '#f5f5f5', borderRadius: '8px' }}
           >
             <img
-              src={`http://localhost:5000/api/books/${book.id}/cover`}
+              src={`${BASE_URL}/api/books/${book.id}/cover`}
               alt={book.title}
               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' }}
               onError={(e) => {

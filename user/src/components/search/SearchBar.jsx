@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -17,14 +19,14 @@ export default function SearchBar() {
     }
 
     const timer = setTimeout(() => {
-      fetch(`http://localhost:5000/api/books?search=${encodeURIComponent(query)}`)
+      fetch(`${BASE_URL}/api/books?search=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
           // Add BLOB URLs to suggestions
           const suggestionsWithUrls = data.slice(0, 5).map(book => ({
             ...book,
-            coverUrl: `http://localhost:5000/api/books/${book.id}/cover`,
-            pdfUrl: `http://localhost:5000/api/books/${book.id}/pdf`
+            coverUrl: `${BASE_URL}/api/books/${book.id}/cover`,
+            pdfUrl: `${BASE_URL}/api/books/${book.id}/pdf`
           }));
           setSuggestions(suggestionsWithUrls);
           setShowSuggestions(true);
@@ -61,7 +63,7 @@ export default function SearchBar() {
   const BookCard = ({ book }) => (
     <div
       className="border rounded-xl shadow-md p-3 bg-white hover:shadow-xl transition cursor-pointer flex flex-col"
-      style={{ height: '280px', width: 'calc(100% - 5px)' }} // Adjusted dimensions
+      style={{ height: '280px', width: 'calc(100% - 5px)' }}
       onClick={() => window.open(book.pdfUrl, '_blank')}
     >
       <div className="flex justify-center mb-3">
@@ -78,7 +80,7 @@ export default function SearchBar() {
           No Cover
         </div>
       </div>
-      
+
       <div className="flex-1">
         <h3 className="text-lg font-bold text-indigo-800 mb-2 truncate">{book.title}</h3>
         <p className="text-sm text-gray-600 mb-1">by {book.author}</p>
@@ -117,7 +119,6 @@ export default function SearchBar() {
         </ul>
       )}
 
-      {/* Display matched books below the search bar */}
       {query.trim() && (
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {suggestions.length === 0 ? (

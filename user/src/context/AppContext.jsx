@@ -12,6 +12,8 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
   // Fetch books from backend API with applied filters
   const fetchBooks = async () => {
     setLoading(true);
@@ -27,7 +29,7 @@ export function AppProvider({ children }) {
       // Potential place to append sortBy if backend supports sorting
       // params.append('sortBy', sortBy);
 
-      const response = await fetch(`http://localhost:5000/api/books?${params.toString()}`);
+      const response = await fetch(`${BASE_URL}/api/books?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch books');
       const data = await response.json();
       setBooks(data);
@@ -60,7 +62,7 @@ export function AppProvider({ children }) {
         setSortBy,
         loading,
         error,
-        fetchBooks
+        fetchBooks,
       }}
     >
       {children}

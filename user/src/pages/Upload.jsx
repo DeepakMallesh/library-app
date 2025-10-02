@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function UploadPage() {
   const [form, setForm] = useState({
     title: '',
@@ -87,7 +89,7 @@ export default function UploadPage() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!bookFile) {
       alert('Please select a Book PDF file.');
       return;
@@ -109,17 +111,17 @@ export default function UploadPage() {
     data.append('description', form.description);
 
     try {
-      const res = await fetch('http://localhost:5000/api/books/upload', {
+      const res = await fetch(`${BASE_URL}/api/books/upload`, {
         method: 'POST',
         body: data,
       });
-      
+
       if (!res.ok) throw new Error('Upload failed');
-      
+
       // Success: Reset form and show success message
       alert('Book uploaded successfully! 📚');
       resetForm(); // Clear all form data
-      
+
     } catch (err) {
       console.error('Upload error:', err);
       alert('Error uploading book. Please try again.');

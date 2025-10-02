@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 
+const BASE_URL = "https://library-backend-jrs5.onrender.com";
+
 export default function Home() {
   const [booksByCategory, setBooksByCategory] = useState({});
   const scrollRefs = useRef({});
@@ -10,17 +12,17 @@ export default function Home() {
     // Fetch all recommended books, grouped by category
     async function fetchRecommended() {
       try {
-        const res = await fetch('http://localhost:5000/api/books?limit=50&sort=newest');
+        const res = await fetch(`${BASE_URL}/api/books?limit=50&sort=newest`);
         if (!res.ok) throw new Error('Failed to fetch recommended books');
         const data = await res.json();
-        
+
         // Add BLOB URLs to each book and group by category
         const booksWithUrls = data.map(book => ({
           ...book,
-          coverUrl: `http://localhost:5000/api/books/${book.id}/cover`,
-          pdfUrl: `http://localhost:5000/api/books/${book.id}/pdf`
+          coverUrl: `${BASE_URL}/api/books/${book.id}/cover`,
+          pdfUrl: `${BASE_URL}/api/books/${book.id}/pdf`
         }));
-        
+
         const grouped = {};
         booksWithUrls.forEach(book => {
           const cat = book.category || 'General';
