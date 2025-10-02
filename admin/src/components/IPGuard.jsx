@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const ALLOWED_IPS = [
-  "152.57.139.160",      
+  "10.65.11.13",      
   "106.79.198.59"          
 ];
 
